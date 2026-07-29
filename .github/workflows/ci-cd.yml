@@ -56,7 +56,7 @@ jobs:
           if [ ${#SERVICES[@]} -eq 0 ]; then
             JSON="[]"
           else
-            JSON=$(printf '%s\n' "${SERVICES[@]}" | jq -s .)
+            JSON=$(printf '%s\n' "${SERVICES[@]}" | jq -c -s .)
           fi
 
           echo "matrix=$JSON" >> "$GITHUB_OUTPUT"
