@@ -19,7 +19,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final KafkaPublisher kafkaPublisher;
 
-    // ===================== SIGNUP ROUTES =====================
+    // ===================== SIGNUP =====================
 
     public SignupResponseDto signup(SignupRequestDto request) {
 
