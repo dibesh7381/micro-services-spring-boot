@@ -1,0 +1,155 @@
+name: Microservices CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  detect-changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+
+      - name: Generate Dynamic Matrix
+        id: set-matrix
+        shell: bash
+        run: |
+          SERVICES=()
+
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "^AuthService/"; then
+            SERVICES+=('{"name":"auth-service","path":"AuthService","image":"auth-service"}')
+          fi
+
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "^ProfileService/"; then
+            SERVICES+=('{"name":"profile-service","path":"ProfileService","image":"profile-service"}')
+          fi
+
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "^OrderService/"; then
+            SERVICES+=('{"name":"order-service","path":"OrderService","image":"order-service"}')
+          fi
+
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "^EmailService/"; then
+            SERVICES+=('{"name":"email-service","path":"EmailService","image":"email-service"}')
+          fi
+
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "^AnalyticsService/"; then
+            SERVICES+=('{"name":"analytics-service","path":"AnalyticsService","image":"analytics-service"}')
+          fi
+
+          if [ ${#SERVICES[@]} -eq 0 ]; then
+            JSON="[]"
+          else
+            JSON=$(printf '%s\n' "${SERVICES[@]}" | jq -s .)
+          fi
+
+          echo "matrix=$JSON" >> "$GITHUB_OUTPUT"
+
+      - name: Show Matrix
+        run: |
+          echo '${{ steps.set-matrix.outputs.matrix }}'
+
+  build-test:
+    name: Build & Test Changed Services
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.matrix != '[]' && needs.detect-changes.outputs.matrix != '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.service.path }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Run Unit Tests
+        run: mvn clean test
+
+      - name: Build Jar
+        run: mvn package -DskipTests
+
+      - name: Upload Jar Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.service.name }}-jar
+          path: ${{ matrix.service.path }}/target/*.jar
+
+  docker-build-push:
+    name: Docker Build & Push
+    needs:
+      - detect-changes
+      - build-test
+    if: ${{ needs.detect-changes.outputs.matrix != '[]' && needs.detect-changes.outputs.matrix != '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.service.image }}
+          tags: |
+            type=raw,value=latest
+            type=sha
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.service.path }}
+          file: ./${{ matrix.service.path }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
