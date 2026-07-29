@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS auth_service_db;
+
+CREATE DATABASE IF NOT EXISTS profile_service_db;
+
+CREATE DATABASE IF NOT EXISTS order_db;
+
+CREATE DATABASE IF NOT EXISTS email_service_db;
+
+CREATE DATABASE IF NOT EXISTS analytics_service_db;

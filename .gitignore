@@ -1,0 +1,45 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Logs
+*.log
+logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# VS Code
+.vscode/
+
+# Kubernetes
+*.kubeconfig
+
+# Docker
+docker-compose.override.yml
+
+# Temporary files
+*.tmp
+*.swp
+
+# Java
+*.class
+
+# Package files
+*.jar
+*.war
+
+# Generated folders
+out/
+bin/
+
+# Mac
+.AppleDouble
+.LSOverride

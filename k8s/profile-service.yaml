@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-service
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile-service
+  template:
+    metadata:
+      labels:
+        app: profile-service
+    spec:
+      containers:
+        - name: profile-service
+          image: microserviceskafka-profile-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/profile_service_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: tuku1234
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-service
+  namespace: microservices
+spec:
+  selector:
+    app: profile-service
+  ports:
+    - port: 80
+      targetPort: 8082
+  type: ClusterIP

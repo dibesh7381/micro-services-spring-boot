@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  namespace: microservices
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+
+          - path: /api/profile
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-service
+                port:
+                  number: 80
+
+          - path: /api/email
+            pathType: Prefix
+            backend:
+              service:
+                name: email-service
+                port:
+                  number: 80
+
+          - path: /api/analytics
+            pathType: Prefix
+            backend:
+              service:
+                name: analytics-service
+                port:
+                  number: 80
+
+          - path: /api/order
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
