@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
+    // CI/CD pipeline test - no functional changes
+
     private final AnalyticsRepository analyticsRepository;
 
     public void updateAnalytics(Long totalUsers) {

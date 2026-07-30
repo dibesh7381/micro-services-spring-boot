@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProfileService {
 
+    // CI/CD pipeline test - no functional changes
+
     private final ProfileRepository profileRepository;
 
     public ProfileDto getMyProfile(Long userId) {
