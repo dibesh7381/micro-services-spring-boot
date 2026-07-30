@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+// Trigger CI/CD test run for EmailService path change detection
 @Service
 @RequiredArgsConstructor
 public class EmailService {
