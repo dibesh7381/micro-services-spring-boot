@@ -6,12 +6,13 @@ import EmailService.com.example.EmailService.repository.EmailLogRepository;
 import EmailService.com.example.EmailService.repository.OrderEmailLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+
+    // CI/CD pipeline test - no functional changes
 
     private final EmailLogRepository emailLogRepository;
     private final OrderEmailLogRepository orderEmailLogRepository;
