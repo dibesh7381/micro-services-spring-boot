@@ -11,7 +11,6 @@ public class AnalyticsService {
 
     // CI/CD pipeline test - no functional changes
     // Testing Again GHCR Image Pull and Local K8s Deploy
-    // Triggering fresh pipeline run for AnalyticsService
 
     private final AnalyticsRepository analyticsRepository;
 
