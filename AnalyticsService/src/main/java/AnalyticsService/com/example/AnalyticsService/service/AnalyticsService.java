@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class AnalyticsService {
 
     // CI/CD pipeline test - no functional changes
-    // Triggering local K8s CI/CD test for AnalyticsService
+    // Testing GHCR Image Pull and Local K8s Deploy
 
     private final AnalyticsRepository analyticsRepository;
 
