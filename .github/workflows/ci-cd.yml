@@ -93,7 +93,6 @@ jobs:
       - name: Convert Service Name to Lowercase
         id: service-name
         run: |
-          # GHCR lowercase image names expect karta hai (e.g., AuthService -> authservice)
           NAME=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
           echo "image_name=$NAME" >> "$GITHUB_OUTPUT"
 
@@ -126,3 +125,34 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # -------------------------------------------------------------
+  # LOCAL DEPLOYMENT JOB (Runs on your laptop via runner)
+  # -------------------------------------------------------------
+  deploy-local:
+    name: Deploy to Local Kubernetes
+    needs:
+      - detect-changes
+      - docker-build-push
+    if: ${{ needs.detect-changes.outputs.matrix != '[]' && needs.detect-changes.outputs.matrix != '' }}
+    runs-on: self-hosted
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+
+    steps:
+      - name: Trigger Kubernetes Rollout Restart
+        shell: powershell
+        run: |
+          # 1. Service Name Lowercase (e.g., AuthService -> authservice)
+          $NAME = "${{ matrix.service }}".ToLower()
+          
+          # 2. Add hyphen (e.g., authservice -> auth-service)
+          $DEPLOY_NAME = $NAME -replace "service", "-service"
+          
+          # 3. Local K8s restart in microservices namespace
+          kubectl rollout restart deployment/$DEPLOY_NAME -n microservices
+          
+          Write-Host "🚀 $DEPLOY_NAME successfully restarted in microservices namespace!"
