@@ -13,10 +13,13 @@ spec:
       labels:
         app: email-service
     spec:
+      # 🔑 GHCR Authentication Secret
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: email-service
-          image: microserviceskafka-email-service:latest
-          imagePullPolicy: Never
+          image: ghcr.io/dibesh7381/emailservice:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8083
           env:

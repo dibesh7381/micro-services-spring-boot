@@ -13,10 +13,13 @@ spec:
       labels:
         app: order-service
     spec:
+      # 🔑 GHCR Authentication Secret
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: order-service
-          image: microserviceskafka-order-service:latest
-          imagePullPolicy: Never
+          image: ghcr.io/dibesh7381/orderservice:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8085
           env:

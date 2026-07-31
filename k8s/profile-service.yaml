@@ -13,10 +13,13 @@ spec:
       labels:
         app: profile-service
     spec:
+      # 🔑 GHCR Authentication Secret
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: profile-service
-          image: microserviceskafka-profile-service:latest
-          imagePullPolicy: Never
+          image: ghcr.io/dibesh7381/profileservice:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8082
           env:
