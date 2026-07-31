@@ -13,10 +13,15 @@ spec:
       labels:
         app: analytics-service
     spec:
+      # 1. GHCR Authentication Secret
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: analytics-service
-          image: microserviceskafka-analytics-service:latest
-          imagePullPolicy: Never
+          # 2. GHCR Registry Image URL
+          image: ghcr.io/dibesh7381/analyticsservice:latest
+          # 3. Always pull fresh image from GHCR on restart
+          imagePullPolicy: Always
           ports:
             - containerPort: 8084
           env:
