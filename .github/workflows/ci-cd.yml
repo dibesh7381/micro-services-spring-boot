@@ -146,6 +146,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
       - name: Apply Manifest & Restart K8s Deployment
         shell: powershell
         run: |
