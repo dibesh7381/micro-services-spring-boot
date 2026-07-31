@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    // CI/CD test
+    // 🚀 CI/CD Trigger Test - AuthService K8s Rollout Magic
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
