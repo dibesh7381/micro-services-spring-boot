@@ -12,6 +12,8 @@ public class ProfileService {
 
     // CI/CD pipeline test - no functional changes
 
+    // 🚀 GHCR Migration Test - ProfileService Live K8s Rollout
+
     private final ProfileRepository profileRepository;
 
     public ProfileDto getMyProfile(Long userId) {

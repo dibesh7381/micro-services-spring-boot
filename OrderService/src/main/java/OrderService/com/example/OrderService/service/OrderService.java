@@ -17,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
 
+    // 🚀 GHCR Migration Test - OrderService Live K8s Rollout
+
     private final OrderRepository orderRepository;
     private final KafkaPublisher kafkaPublisher;
 

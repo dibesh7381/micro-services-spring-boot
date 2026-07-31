@@ -14,6 +14,8 @@ public class EmailService {
 
     // CI/CD pipeline test - no functional changes
 
+    // 🚀 GHCR Migration Test - EmailService Live K8s Rollout
+
     private final EmailLogRepository emailLogRepository;
     private final OrderEmailLogRepository orderEmailLogRepository;
 
