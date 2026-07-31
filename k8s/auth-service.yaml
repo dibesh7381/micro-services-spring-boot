@@ -13,10 +13,13 @@ spec:
       labels:
         app: auth-service
     spec:
+      # 🔑 GHCR Authentication Secret (VERY IMPORTANT)
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: auth-service
-          image: microserviceskafka-auth-service:latest
-          imagePullPolicy: Never
+          image: ghcr.io/dibesh7381/authservice:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           env:
