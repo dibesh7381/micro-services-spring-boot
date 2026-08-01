@@ -17,7 +17,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: email-service
-          image: ghcr.io/dibesh7381/emailservice:latest
+          image: ghcr.io/dibesh7381/emailservice:${IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8083

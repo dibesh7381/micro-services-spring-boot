@@ -158,8 +158,7 @@ jobs:
           # 2. Get 7-character short commit SHA
           $SHORT_SHA = "${{ github.sha }}".Substring(0, 7)
           
-          # 3. Dynamic tag replacement in k8s manifest file
-          (Get-Content k8s/$DEPLOY_NAME.yaml) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" -replace ':latest', ":sha-$SHORT_SHA" | Set-Content k8s/$DEPLOY_NAME.yaml
+          (Get-Content k8s/$DEPLOY_NAME.yaml) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" | Set-Content k8s/$DEPLOY_NAME.yaml
           
           # 4. Apply updated manifest (K8s will automatically trigger rolling update due to image tag change)
           kubectl apply -f k8s/$DEPLOY_NAME.yaml

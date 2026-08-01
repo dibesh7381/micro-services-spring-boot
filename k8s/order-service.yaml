@@ -17,7 +17,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: order-service
-          image: ghcr.io/dibesh7381/orderservice:latest
+          image: ghcr.io/dibesh7381/orderservice:${IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8085
