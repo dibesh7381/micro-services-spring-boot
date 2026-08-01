@@ -16,6 +16,8 @@ public class AuthService {
 
     // ⚡ CI/CD Automation v2.0 - Push commit, sit back & watch K8s deployment magic! 🚀
 
+    // TEST: Verifying multi-service dynamic SHA tagging for Auth Service
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;

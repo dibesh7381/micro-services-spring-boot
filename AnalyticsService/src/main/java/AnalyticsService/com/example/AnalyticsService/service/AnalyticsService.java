@@ -11,6 +11,8 @@ public class AnalyticsService {
 
     // Testing dynamic SHA-based zero-downtime deployment
 
+    // TEST: Verifying multi-service dynamic SHA tagging for Analytics Service
+
     private final AnalyticsRepository analyticsRepository;
 
     public void updateAnalytics(Long totalUsers) {
