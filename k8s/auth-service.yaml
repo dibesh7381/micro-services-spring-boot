@@ -13,7 +13,6 @@ spec:
       labels:
         app: auth-service
     spec:
-      # 🔑 GHCR Authentication Secret (VERY IMPORTANT)
       imagePullSecrets:
         - name: ghcr-secret
       containers:
