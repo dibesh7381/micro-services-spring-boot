@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
-    // Triggering workflow run for service-specific deployment validation
+    // Testing dynamic SHA-based zero-downtime deployment
 
     private final AnalyticsRepository analyticsRepository;
 
