@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
-    // CI/CD pipeline test - no functional changes
+    // Triggering workflow run for service-specific deployment validation
 
     private final AnalyticsRepository analyticsRepository;
 
