@@ -126,9 +126,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # -------------------------------------------------------------
-  # LOCAL DEPLOYMENT JOB (Runs on your laptop via runner)
-  # -------------------------------------------------------------
   deploy-local:
     name: Deploy to Local Kubernetes
     needs:
@@ -151,19 +148,20 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Apply Manifest & Restart K8s Deployment
+      - name: Apply Manifest with Dynamic Commit SHA
         shell: powershell
         run: |
-          # 1. Service Name Lowercase (e.g., AuthService -> authservice)
+          # 1. Lowercase service name & deployment format (e.g., AuthService -> auth-service)
           $NAME = "${{ matrix.service }}".ToLower()
-          
-          # 2. Add hyphen (e.g., authservice -> auth-service)
           $DEPLOY_NAME = $NAME -replace "service", "-service"
           
-          # 3. Apply updated manifest automatically from k8s folder
+          # 2. Get 7-character short commit SHA
+          $SHORT_SHA = "${{ github.sha }}".Substring(0, 7)
+          
+          # 3. Dynamic tag replacement in k8s manifest file
+          (Get-Content k8s/$DEPLOY_NAME.yaml) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" -replace ':latest', ":sha-$SHORT_SHA" | Set-Content k8s/$DEPLOY_NAME.yaml
+          
+          # 4. Apply updated manifest (K8s will automatically trigger rolling update due to image tag change)
           kubectl apply -f k8s/$DEPLOY_NAME.yaml
           
-          # 4. Trigger rollout restart to force pulling the fresh GHCR image
-          kubectl rollout restart deployment/$DEPLOY_NAME -n microservices
-          
-          Write-Host "🚀 $DEPLOY_NAME manifest applied and rollout restarted successfully!"
+          Write-Host "🚀 $DEPLOY_NAME manifest updated to sha-$SHORT_SHA and deployed successfully!"
