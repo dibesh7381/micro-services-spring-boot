@@ -162,5 +162,4 @@ jobs:
           
           # 4. Apply updated manifest (K8s will automatically trigger rolling update due to image tag change)
           kubectl apply -f k8s/$DEPLOY_NAME.yaml
-          
-          Write-Host "🚀 $DEPLOY_NAME manifest updated to sha-$SHORT_SHA and deployed successfully!"
+        
