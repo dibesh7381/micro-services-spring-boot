@@ -18,6 +18,8 @@ public class AuthService {
 
     // TEST: Verifying multi-service dynamic SHA tagging for Auth Service
 
+    // CI/CD test: Trigger AuthService deployment using dynamic SHA image tag.
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
