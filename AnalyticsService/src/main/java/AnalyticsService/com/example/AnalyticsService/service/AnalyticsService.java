@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
-    // Testing dynamic SHA-based zero-downtime deployment
-
-    // TEST: Verifying multi-service dynamic SHA tagging for Analytics Service
+    // CI/CD test: Trigger GitHub Actions to verify dynamic SHA image deployment.
 
     private final AnalyticsRepository analyticsRepository;
 
