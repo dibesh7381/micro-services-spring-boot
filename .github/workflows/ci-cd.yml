@@ -160,6 +160,9 @@ jobs:
           
           (Get-Content k8s/$DEPLOY_NAME.yaml) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" | Set-Content k8s/$DEPLOY_NAME.yaml
           
+          Write-Host "========== FINAL YAML =========="
+          Get-Content k8s/$DEPLOY_NAME.yaml
+          
           # 4. Apply updated manifest (K8s will automatically trigger rolling update due to image tag change)
           kubectl apply -f k8s/$DEPLOY_NAME.yaml
         
