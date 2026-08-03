@@ -16,6 +16,8 @@ public class EmailService {
 
     // 🚀 GHCR Migration Test - EmailService Live K8s Rollout
 
+    // CI/CD test: Trigger EmailService deployment using dynamic SHA image tag.
+
     private final EmailLogRepository emailLogRepository;
     private final OrderEmailLogRepository orderEmailLogRepository;
 
