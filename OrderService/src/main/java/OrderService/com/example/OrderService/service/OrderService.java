@@ -19,6 +19,8 @@ public class OrderService {
 
     // 🚀 GHCR Migration Test - OrderService Live K8s Rollout
 
+    // CI/CD test: Trigger OrderService deployment using dynamic SHA image tag.
+
     private final OrderRepository orderRepository;
     private final KafkaPublisher kafkaPublisher;
 

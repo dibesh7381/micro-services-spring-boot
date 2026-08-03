@@ -14,6 +14,8 @@ public class ProfileService {
 
     // 🚀 GHCR Migration Test - ProfileService Live K8s Rollout
 
+    // CI/CD test: Trigger ProfileService deployment using dynamic SHA image tag.
+
     private final ProfileRepository profileRepository;
 
     public ProfileDto getMyProfile(Long userId) {
