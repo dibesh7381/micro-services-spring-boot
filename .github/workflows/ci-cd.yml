@@ -31,7 +31,6 @@ jobs:
             OrderService: 'OrderService/**'
             EmailService: 'EmailService/**'
             AnalyticsService: 'AnalyticsService/**'
-            k8s: 'k8s/**'
 
   build-test:
     name: Build & Test Changed Services
@@ -112,7 +111,7 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/${{ steps.service-name.outputs.image_name }}
           tags: |
             type=raw,value=latest
-            type=sha
+            type=sha,prefix=sha-
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -160,11 +159,11 @@ jobs:
           # 2. Get 7-character short commit SHA
           $SHORT_SHA = "${{ github.sha }}".Substring(0, 7)
           
-          (Get-Content k8s/$DEPLOY_NAME.yaml) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" | Set-Content k8s/$DEPLOY_NAME.yaml
+          # 3. Replace token ensuring UTF-8 encoding
+          (Get-Content "k8s/$DEPLOY_NAME.yaml" -Raw) -replace '\$\{IMAGE_TAG\}', "sha-$SHORT_SHA" | Set-Content "k8s/$DEPLOY_NAME.yaml" -Encoding UTF8
           
-          Write-Host "========== FINAL YAML =========="
-          Get-Content k8s/$DEPLOY_NAME.yaml
+          Write-Host "========== FINAL YAML ($DEPLOY_NAME) =========="
+          Get-Content "k8s/$DEPLOY_NAME.yaml"
           
           # 4. Apply updated manifest
-          kubectl apply -f k8s/$DEPLOY_NAME.yaml
-        
+          kubectl apply -f "k8s/$DEPLOY_NAME.yaml"
