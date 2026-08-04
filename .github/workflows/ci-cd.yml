@@ -13,16 +13,15 @@ jobs:
     name: Detect Changed Services
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.filter-services.outputs.changes }}
-      k8s_changed: ${{ steps.filter-k8s.outputs.k8s }}
+      matrix: ${{ steps.filter.outputs.changes }}
+      k8s_changed: ${{ steps.filter.outputs.k8s }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Sirf Java services ke liye matrix (K8s isme nahi aayega, so build fail nahi hoga)
       - name: Check changed services
-        id: filter-services
+        id: filter
         uses: dorny/paths-filter@v3
         with:
           matrix: true
@@ -32,16 +31,7 @@ jobs:
             OrderService: 'OrderService/**'
             EmailService: 'EmailService/**'
             AnalyticsService: 'AnalyticsService/**'
-
-      # K8s aur Ingress files ke changes ko alag se track karne ke liye
-      - name: Check changed k8s files
-        id: filter-k8s
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            k8s:
-              - 'k8s/**'
-              - 'ingress.yaml'
+            k8s: 'k8s/**'
 
   build-test:
     name: Build & Test Changed Services
@@ -177,28 +167,4 @@ jobs:
           
           # 4. Apply updated manifest
           kubectl apply -f k8s/$DEPLOY_NAME.yaml
-
-  deploy-ingress:
-    name: Deploy Ingress Manifest
-    needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.k8s_changed == 'true' }}
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Apply Ingress
-        shell: powershell
-        run: |
-          if (Test-Path "ingress.yaml") {
-              kubectl apply -f ingress.yaml
-          } elseif (Test-Path "k8s/ingress.yaml") {
-              kubectl apply -f k8s/ingress.yaml
-          }
         
