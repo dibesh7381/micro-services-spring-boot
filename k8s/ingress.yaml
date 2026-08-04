@@ -4,8 +4,14 @@ metadata:
   name: microservices-ingress
   namespace: microservices
   annotations:
+    # Per-minute rate limit (har IP se max 10 requests per minute)
     nginx.ingress.kubernetes.io/limit-rps: "10"
-    nginx.ingress.kubernetes.io/limit-burst-multiplier: "1"
+
+    # Connection limit (ek IP se max 5 concurrent connections)
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+
+    # Burst limit (kitni extra requests allow karni hain temporary spike me)
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
 spec:
   ingressClassName: nginx
   rules:
