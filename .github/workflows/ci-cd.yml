@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.filter.outputs.changes }}
+      k8s_changed: ${{ steps.filter.outputs.k8s }}
 
     steps:
       - name: Checkout Repository
@@ -30,6 +31,7 @@ jobs:
             OrderService: 'OrderService/**'
             EmailService: 'EmailService/**'
             AnalyticsService: 'AnalyticsService/**'
+            k8s: 'k8s/**'
 
   build-test:
     name: Build & Test Changed Services
@@ -127,7 +129,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy-local:
-    name: Deploy to Local Kubernetes
+    name: Deploy Services to Local Kubernetes
     needs:
       - detect-changes
       - docker-build-push
@@ -163,6 +165,35 @@ jobs:
           Write-Host "========== FINAL YAML =========="
           Get-Content k8s/$DEPLOY_NAME.yaml
           
-          # 4. Apply updated manifest (K8s will automatically trigger rolling update due to image tag change)
+          # 4. Apply updated manifest
           kubectl apply -f k8s/$DEPLOY_NAME.yaml
+
+  deploy-ingress-and-configs:
+    name: Deploy Ingress & Common Manifests
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.k8s_changed == 'true' }}
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Apply Ingress & Global K8s Configs
+        shell: powershell
+        run: |
+          Write-Host "Applying Ingress & K8s Configuration Changes..."
+          
+          # Root me rakhi ingress.yaml apply karega (ya agar k8s/ ingress.yaml ho toh path adjust kar lo)
+          if (Test-Path "ingress.yaml") {
+              kubectl apply -f ingress.yaml
+          } elseif (Test-Path "k8s/ingress.yaml") {
+              kubectl apply -f k8s/ingress.yaml
+          } else {
+              Write-Host "ingress.yaml file not found!"
+          }
         
